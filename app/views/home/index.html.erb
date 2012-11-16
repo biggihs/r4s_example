@@ -1,0 +1,23 @@
+<h1>R4S Example page</h1>
+<p><div id="message"></div></p>
+<br/>
+<p><div id="connections"></div></p>
+<br/>
+<div id="click" class="btn btn-primary">BAM !!!</div>
+<%= javascript_tag do %>
+jQuery(document).ready(function(){
+  source = new EventSource('/sse/stream');
+  source.addEventListener('refresh', function(e) {
+    console.log('someone pressed the button');
+    var data = JSON.parse(e.data);
+    jQuery('#message').html(data["time"]);
+  });
+  jQuery('#click').click(function(){
+    jQuery.get('/home/push');
+  });
+  jQuery.get('/home/connections',function(data){
+    jQuery('#connections').html(data['connections']);
+  });
+});
+
+<% end %>
